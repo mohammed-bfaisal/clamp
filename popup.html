@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLAMP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0e0e10;
+      --surface: #18181b;
+      --border: #2a2a2f;
+      --accent: #7c6aff;
+      --accent-dim: #4a3fa0;
+      --text: #e8e8f0;
+      --text-dim: #7a7a8c;
+      --success: #4ade80;
+      --error: #f87171;
+      --warn: #fb923c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      width: 340px;
+      min-height: 200px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-mark {
+      width: 24px;
+      height: 24px;
+      background: var(--accent);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--text);
+    }
+
+    .logo-version {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 0;
+      margin-top: 1px;
+    }
+
+    .settings-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text-dim);
+      cursor: pointer;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .settings-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Views ── */
+    .view { display: none; padding: 16px; }
+    .view.active { display: block; }
+
+    /* ── Main view ── */
+    .platform-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+      padding: 6px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .platform-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+
+    .platform-dot.unsupported { background: var(--error); }
+
+    .unsupported-msg {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .clamp-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .clamp-btn:hover:not(:disabled) {
+      background: #9180ff;
+      transform: translateY(-1px);
+    }
+
+    .clamp-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Progress ── */
+    .progress {
+      margin-top: 14px;
+      display: none;
+    }
+
+    .progress.visible { display: block; }
+
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 0;
+      font-size: 10px;
+      color: var(--text-dim);
+      transition: color 0.2s;
+    }
+
+    .progress-step.active { color: var(--accent); }
+    .progress-step.done { color: var(--success); }
+    .progress-step.error { color: var(--error); }
+
+    .step-icon {
+      font-size: 11px;
+      width: 14px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Error box ── */
+    .error-box {
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: 6px;
+      font-size: 10px;
+      color: var(--error);
+      line-height: 1.5;
+      display: none;
+    }
+    .error-box.visible { display: block; }
+
+    /* ── Settings view ── */
+    .settings-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+
+    .field input, .field select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 8px 10px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus, .field select:focus {
+      border-color: var(--accent);
+    }
+
+    .field input::placeholder { color: var(--text-dim); }
+
+    .field-hint {
+      font-size: 9px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .field-hint a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 10px;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-top: 4px;
+    }
+
+    .save-btn:hover { background: var(--accent); color: #fff; }
+
+    .save-confirm {
+      font-size: 10px;
+      color: var(--success);
+      text-align: center;
+      margin-top: 8px;
+      display: none;
+    }
+    .save-confirm.visible { display: block; }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">
+      <div class="logo-mark">C</div>
+      <div>
+        <div class="logo-text">CLAMP</div>
+        <div class="logo-version">v0.1.0</div>
+      </div>
+    </div>
+    <button class="settings-btn" id="settingsToggle">settings</button>
+  </div>
+
+  <!-- Main view -->
+  <div class="view active" id="mainView">
+    <div class="platform-badge" id="platformBadge">
+      <div class="platform-dot" id="platformDot"></div>
+      <span id="platformLabel">Detecting platform...</span>
+    </div>
+
+    <div class="unsupported-msg" id="unsupportedMsg" style="display:none;">
+      CLAMP supports claude.ai, chatgpt.com, and gemini.google.com.<br/>
+      Open a conversation on one of these platforms.
+    </div>
+
+    <button class="clamp-btn" id="clampBtn" disabled>
+      ⚡ COMPRESS &amp; CONTINUE
+    </button>
+
+    <div class="progress" id="progress">
+      <div class="progress-step" id="step-scrape">
+        <span class="step-icon">○</span>
+        <span>Reading conversation</span>
+      </div>
+      <div class="progress-step" id="step-distill">
+        <span class="step-icon">○</span>
+        <span>Distilling with AI</span>
+      </div>
+      <div class="progress-step" id="step-inject">
+        <span class="step-icon">○</span>
+        <span>Opening new session</span>
+      </div>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <!-- Settings view -->
+  <div class="view" id="settingsView">
+    <button class="back-btn" id="backBtn">← back</button>
+    <div class="settings-title">Settings</div>
+
+    <div class="field">
+      <label>OPENROUTER API KEY</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-or-..." autocomplete="off" />
+      <div class="field-hint">
+        Get a free key at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>MODEL</label>
+      <select id="modelSelect">
+        <option value="google/gemini-2.0-flash-001">Google Gemini 2.0 Flash (fast, cheap)</option>
+        <option value="anthropic/claude-3-5-sonnet">Claude 3.5 Sonnet (better)</option>
+        <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+        <option value="openai/gpt-4o">GPT-4o</option>
+        <option value="meta-llama/llama-3.1-8b-instruct">Llama 3.1 8B (very cheap and fast)</option>
+      </select>
+      <div class="field-hint">Model used for distillation, not the chat model.</div>
+    </div>
+
+    <button class="save-btn" id="saveBtn">SAVE SETTINGS</button>
+    <div class="save-confirm" id="saveConfirm">✓ Saved</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
