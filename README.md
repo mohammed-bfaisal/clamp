@@ -35,7 +35,7 @@ Zero re-explaining. Zero context lost. The session is fresh but the AI already k
 
 **Option A — Load unpacked (30 seconds)**
 
-1. Download [`clamp-v0.1.0.zip`](https://github.com/mohammed-bfaisal/clamp/releases/download/v0.1.0/clamp-v0.1.0.zip) and unzip
+1. Download [`clamp-v0.2.0.zip`](https://github.com/mohammed-bfaisal/clamp/releases/download/v0.2.0/clamp-v0.2.0.zip) and unzip
 2. Go to `chrome://extensions`
 3. Enable **Developer mode** (top right toggle)
 4. Click **Load unpacked** → select the `clamp-ext` folder
