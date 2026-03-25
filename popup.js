@@ -69,13 +69,6 @@ clampBtn.addEventListener("click", async () => {
     // Steps 1+2+3 all happen in background (scrape → distill → inject)
     // We animate progress steps with timing to reflect the actual flow
 
-    // Data disclosure — shown once per session via sessionStorage
-    if (!sessionStorage.getItem("clamp_disclosed")) {
-      const ok = confirm("CLAMP will send your conversation to OpenRouter for distillation. It is not stored by CLAMP. Continue?");
-      if (!ok) { clampBtn.disabled = false; return; }
-      sessionStorage.setItem("clamp_disclosed", "1");
-    }
-
     setStep("scrape", "active");
     await sleep(400);
 
