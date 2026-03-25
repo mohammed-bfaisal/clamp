@@ -50,7 +50,7 @@ Zero re-explaining. Zero context lost. The session is fresh but the AI already k
 |----------|--------|
 | claude.ai | ✅ Supported |
 | chatgpt.com | ✅ Supported |
-| gemini.google.com | ✅ Supported |
+| gemini.google.com | ❌ Not pasting new prompt in new chat, working on it |
 | grok.x.com | 🔜 Coming soon |
 | perplexity.ai | 🔜 Coming soon |
 
