@@ -48,6 +48,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ ok: false, error: "Could not find source tab." });
         return;
       }
+      const hostname = new URL(tab.url).hostname;
+      const supported = { "claude.ai":1, "chatgpt.com":1, "chat.openai.com":1, "gemini.google.com":1 };
+      if (!supported[hostname]) {
+        sendResponse({ ok: false, error: "Tab is not a supported platform." });
+        return;
+      }
       handleDistillAndContinue(message.payload, tab)
         .then((result) => sendResponse({ ok: true, ...result }))
         .catch((err) => sendResponse({ ok: false, error: err.message }));
@@ -56,14 +62,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === "GET_SETTINGS") {
-    chrome.storage.sync.get(["apiKey", "model"], (data) => {
+    chrome.storage.local.get(["apiKey", "model"], (data) => {
       sendResponse({ apiKey: data.apiKey || "", model: data.model || DEFAULT_MODEL });
     });
     return true;
   }
 
   if (message.type === "SAVE_SETTINGS") {
-    chrome.storage.sync.set({ apiKey: message.apiKey, model: message.model }, () => {
+    chrome.storage.local.set({ apiKey: message.apiKey, model: message.model }, () => {
       sendResponse({ ok: true });
     });
     return true;
@@ -308,7 +314,7 @@ function injectTextIntoChat(text, platform) {
 
 function getSettings() {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(["apiKey", "model"], (data) => {
+    chrome.storage.local.get(["apiKey", "model"], (data) => {
       resolve({ apiKey: data.apiKey || "", model: data.model || DEFAULT_MODEL });
     });
   });
