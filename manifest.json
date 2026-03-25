@@ -1,9 +1,8 @@
 {
   "manifest_version": 3,
   "name": "CLAMP",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Stop burning AI session limits. Distill your conversation and continue in a fresh session instantly.",
-
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -12,14 +11,12 @@
       "128": "src/icons/icon128.png"
     }
   },
-
   "permissions": [
     "activeTab",
     "scripting",
     "storage",
     "tabs"
   ],
-
   "host_permissions": [
     "https://claude.ai/*",
     "https://chatgpt.com/*",
@@ -27,29 +24,39 @@
     "https://gemini.google.com/*",
     "https://openrouter.ai/*"
   ],
-
   "content_scripts": [
     {
-      "matches": ["https://claude.ai/*"],
-      "js": ["src/scrapers/claude.js"],
+      "matches": [
+        "https://claude.ai/*"
+      ],
+      "js": [
+        "src/scrapers/claude.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
-      "js": ["src/scrapers/chatgpt.js"],
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "src/scrapers/chatgpt.js"
+      ],
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://gemini.google.com/*"],
-      "js": ["src/scrapers/gemini.js"],
+      "matches": [
+        "https://gemini.google.com/*"
+      ],
+      "js": [
+        "src/scrapers/gemini.js"
+      ],
       "run_at": "document_idle"
     }
   ],
-
   "background": {
     "service_worker": "src/background.js"
   },
-
   "icons": {
     "16": "src/icons/icon16.png",
     "48": "src/icons/icon48.png",
