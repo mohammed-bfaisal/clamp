@@ -50,7 +50,7 @@ Zero re-explaining. Zero context lost. The session is fresh but the AI already k
 |----------|--------|
 | claude.ai | ✅ Supported |
 | chatgpt.com | ✅ Supported |
-| gemini.google.com | ✅ Supported |
+| gemini.google.com | ❌ Not pasting new prompt in new chat, working on it |
 | grok.x.com | 🔜 Coming soon |
 | perplexity.ai | 🔜 Coming soon |
 
@@ -93,7 +93,7 @@ contenteditable injection timing on chatgpt.com's React SPA.
 CLAMP uses [OpenRouter](https://openrouter.ai) for distillation — not the chat platform's own API. This means:
 - **Model-agnostic** — use Claude, GPT-4o, Gemini, or even free Llama models
 - **Your key, your cost** — no CLAMP subscription, no data sent to us
-- **~$0.001 per compression** with Haiku (the default)
+- **~$0.001 per compression** with Gemini Flash 2 (the default)
 
 ## Roadmap
 
@@ -111,12 +111,6 @@ If CLAMP stops working on a platform:
 1. Open DevTools → Inspector on the conversation
 2. Find the selector for human/AI turns
 3. PR to update `src/scrapers/<platform>.js`
-
-That's it. No build step, no toolchain. Just edit and PR.
-
-## License
-
-MIT — do whatever you want with it.
 
 ---
 
